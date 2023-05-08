@@ -7,7 +7,7 @@ let userData =
     phone : ' ',
     dni : ' ',
     userMembership : [],
-    name : false,
+    name : ' ', 
     address:
     {
         country : '',
@@ -48,7 +48,7 @@ class UserHandler
             state = true;
             listOfUser.push(user);
         }
-        console.log(listOfUser)
+        // console.log(listOfUser)
         return state;
         
     }
@@ -58,19 +58,29 @@ class UserHandler
 
         listOfUser.splice(index, 1);
         console.log(`Usuario ${id} eliminado correctamente`);
+        console.log(listOfUser)
 
     }
     update(id,newData)
     {
-
+        let index = listOfUser.findIndex(user => user.id === id);
+        for (const key in newData)//tambien se puede usar spread operator...
+        { 
+            listOfUser[index][key] = newData[key];
+        }
+        // console.log(listOfUser[index])
     }
     read(id)
     {
+        let index = listOfUser.findIndex(user => user.id === id);
 
+        // console.log(listOfUser[index])
     }
     getGoupMembership(id)
     {
+        let index = listOfUser.findIndex(user => user.id === id);
 
+        console.log(listOfUser[index].userMembership)
     }
 }
 
@@ -83,7 +93,7 @@ userData.gender = 'Masculino';
 userData.name = 'Omar';
 userData.surname = 'López';
 userData.phone = '2236954863';
-userData.userMembership = '2236954863';
+userData.userMembership = ['estudiante','CAI'];
 userData.address.country = 'Argentina';
 userData.address.province = 'Buenos Aires';
 userData.address.postalcode = '7600';
@@ -93,7 +103,14 @@ userData.address.numberOfStreet = '8490';
 
 userHandler.create(userData);
 
-userData.id = 2;
+userData.id = '2';
 
 userHandler.create(userData);
 
+let newData = {name : 'valen',surname : 'perez polo',gender : 'femenino',userMembership : ['profesor','regente']}
+
+userHandler.update('1',newData)
+userHandler.read('1')
+
+// userHandler.remove('1')
+userHandler.getGoupMembership('1')
