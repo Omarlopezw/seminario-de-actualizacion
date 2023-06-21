@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 19-06-2023 a las 21:03:50
+-- Tiempo de generación: 22-06-2023 a las 00:57:01
 -- Versión del servidor: 8.0.18
 -- Versión de PHP: 7.4.5
 
@@ -88,6 +88,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteUser` (IN `userID` VARCHAR(50
 
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteUserHasGroup` (IN `userID` INT, IN `groupID` INT)  BEGIN
+    DELETE FROM `user_has_group` WHERE 	
+	user_id = userID AND Group_id = groupID ;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `selectAllData` (IN `table_name` VARCHAR(50))  BEGIN
     SET @query = CONCAT('SELECT * FROM ', table_name);
     PREPARE stmt FROM @query;
@@ -99,12 +104,46 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `selectGroupData` (IN `groupID` VARC
 	SELECT * FROM `group` WHERE id = groupID;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `selectGrouphasGroupdata` (IN `groupID` INT)  BEGIN
+    SELECT groupdata.*
+    FROM `group` 
+    JOIN group_has_groupdata ON `group`.id = group_has_groupdata.Group_id
+    JOIN groupdata ON groupdata.id = group_has_groupdata.groupData_id
+    where `group`.id = groupID;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `selectUserData` (IN `userID` VARCHAR(50))  BEGIN
 	set @userData = CONCAT('SELECT * FROM user WHERE id =',userID);
 	prepare stmt FROM @userData;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
 
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `selectUserhasUserdata` (IN `userID` INT)  BEGIN
+    SELECT userdata.*
+    FROM user
+    JOIN user_has_userdata ON user.id = user_has_userdata.user_id
+    JOIN userdata ON userdata.id = user_has_userdata.userData_id
+    where user.id = userID;
+
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updateGroupdata` (IN `updatedColumn` VARCHAR(50), IN `newdata` VARCHAR(50), IN `groupdataID` INT)  BEGIN
+    SET @sql = CONCAT('UPDATE groupdata SET ', updatedColumn, ' = ? WHERE id = ?');
+    PREPARE stmt FROM @sql;
+    SET @param1 = newdata;
+    SET @param2 = groupdataID;
+    EXECUTE stmt USING @param1, @param2;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updateUserdata` (IN `updatedColumn` VARCHAR(50), IN `newdata` VARCHAR(50), IN `userdataID` INT)  BEGIN
+    SET @sql = CONCAT('UPDATE userdata SET ', updatedColumn, ' = ? WHERE id = ?');
+    PREPARE stmt FROM @sql;
+     SET @param1 = newdata;
+    SET @param2 = userdataID;
+    EXECUTE stmt USING @param1, @param2;
 END$$
 
 DELIMITER ;
@@ -270,7 +309,7 @@ INSERT INTO `userdata` (`id`, `namee`, `surname`, `dni`, `telephone`, `gender`, 
 (1, 'omar', 'lopez', 'dni', 'telephone', 'gender', 'address', 'mail', 'role'),
 (2, 'miguel', 'ramirez', '2132132', '1', '2', '3', '4', '2'),
 (3, 'ezequiel', 'López', '432432432', '65465466', 'Masculino', 'Beruti 8490', 'eze@gmail.com', 'estudiante'),
-(4, 'ezequiel', 'López', '432432432', '65465466', 'Masculino', 'Beruti 8490', 'eze@gmail.com', 'estudiante'),
+(4, 'Franco', 'López', '432432432', '65465466', 'Masculino', 'Beruti 8490', 'eze@gmail.com', 'estudiante'),
 (5, 'ezequiel', 'López', '432432432', '65465466', 'Masculino', 'Beruti 8490', 'eze@gmail.com', 'estudiante'),
 (6, 'maria', 'perez', '3213213', '3214124', 'femenino', 'Beruti 8490', 'mari@gmail.com', 'estudiante'),
 (7, 'manuel', 'juarez', '3213213', '3214124', 'Masculio', 'Beruti 8490', 'manu@gmail.com', 'estudiante'),
