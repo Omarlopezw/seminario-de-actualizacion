@@ -1,0 +1,3 @@
+Asociar el grupo con recurso,seguir utilizando los procedimientos que ya cree 
+pero ahora agregando el grupo y recurso a group_has_resource por ejemplo 
+para authorizeAccessToResource y removeAccessToResource
