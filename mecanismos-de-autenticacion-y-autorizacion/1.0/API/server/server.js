@@ -54,8 +54,7 @@ class Server
         const key = method + url;
 
         console.log('key: ' + key );
-
-        console.log('method: ' + request.method);
+        console.log('url: ' + url );
 
         if (!this.resources[key]) 
         {
@@ -63,8 +62,9 @@ class Server
             response.end("Route not found");
         }
     
-        else if( this.resources[key] )
+        else if( url !== '/signIn'  )
         {
+
             let body = [];
             request.on('data', (chunk) => 
             {
@@ -82,7 +82,45 @@ class Server
                 sessionHandler.logIn( requestBody.username,requestBody.password )
                 .then(DBResponse => 
                 {
-                    console.log(requestBody.username,requestBody.password);
+                    console.log('login' + requestBody.username,requestBody.password);
+                    const data = { message: DBResponse } 
+        
+                    response.end(JSON.stringify( data ));
+        
+                    console.log( 'POST response: ', DBResponse )
+                });
+    
+            });                
+        }
+        else if( url == '/signIn' )
+        {
+            let body = [];
+            request.on('data', (chunk) => 
+            {
+                body.push(chunk);
+            }).on('end', () => 
+            {
+                let db = new DataBaseHandler(file);
+                let userHandler = new UserHandler(db);
+                body = Buffer.concat(body).toString();
+                // Convierte la cadena en un objeto JSON
+                let requestBody = JSON.parse(body);
+    
+                response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
+                let userLoginData = {username: requestBody.username,password : requestBody.password}
+                let userData = 
+                {
+                    name: requestBody.name ,
+                    surname : requestBody.surname,
+                    dni : requestBody.dni,
+                    telephone : requestBody.telephone,
+                    gender : requestBody.gender,
+                    address : requestBody.address,
+                    mail : requestBody.mail
+                }
+                userHandler.create( userLoginData,userData )
+                .then(DBResponse => 
+                {
                     const data = { message: DBResponse } 
         
                     response.end(JSON.stringify( data ));

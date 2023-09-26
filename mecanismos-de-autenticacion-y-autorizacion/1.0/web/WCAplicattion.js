@@ -22,10 +22,6 @@ class WCAplicattion extends HTMLElement
         this.loginViewScreen.addEventListener('register',() => { this.register() })
         this.RegistrationViewScreen.addEventListener('signIn',() => { this.login() })
 
-        //routes
-        this.routes = [];
-        this.asocciateRoute('/register',this.RegistrationViewScreen);
-
 
     }
     login()
@@ -42,8 +38,9 @@ class WCAplicattion extends HTMLElement
     }
     register()
     {
-        let path = '/register';
-
+        this.removeChild(this.CurrentViewScreen);
+        this.CurrentViewScreen = this.RegistrationViewScreen;
+        this.appendChild(this.CurrentViewScreen)
     }
     default()
     {
@@ -58,26 +55,6 @@ class WCAplicattion extends HTMLElement
     disconnectedCallback()
     {
 
-    }
-    asocciateRoute(route,WCView)
-    {
-        this.routes[route] = WCView;
-    }
-
-    navigateTo(path) 
-    {
-        if (this.routes[path]) 
-        {
-            this.removeChild(this.CurrentViewScreen);
-
-            this.CurrentViewScreen = this.routes[path];
-            
-            this.appendChild(this.CurrentViewScreen)
-        } 
-        else 
-        {
-            console.error(`No se encontró una vista para la ruta ${path}`);
-        }
     }
 }
 

@@ -54,11 +54,6 @@ constructor(model)
     this.mailInput.value = '';
     this.mailInput.placeholder = 'mail';
 
-    this.roleInput = document.createElement('input');
-    this.roleInput.type = 'role';
-    this.roleInput.value = '';
-    this.roleInput.placeholder = 'role';
-
     this.submitButton = document.createElement('button');
     this.submitButton.innerText = 'Sign in';
 
@@ -75,12 +70,13 @@ connectedCallback()
     this.appendChild(this.mainTitle);
     this.appendChild(this.usernameInput);
     this.appendChild(this.passwordInput);
+    this.appendChild(this.nameInput);
+    this.appendChild(this.surnameInput);
     this.appendChild(this.dniInput);
     this.appendChild(this.telephoneInput);
     this.appendChild(this.genderInput);
     this.appendChild(this.addressInput);
     this.appendChild(this.mailInput);
-    this.appendChild(this.roleInput);
     this.appendChild(this.submitButton);
     this.appendChild(this.backButton);
 
@@ -99,11 +95,13 @@ getRegistrationData()
     {
         username : this.usernameInput.value, 
         password : this.passwordInput.value,
+        name : this.nameInput.value, 
+        surname : this.surnameInput.value,
         dni : this.dniInput.value,
+        gender : this.genderInput.value,
         telephone : this.telephoneInput.value,
         address : this.addressInput.value,
-        mail : this.mailInput.value,
-        role : this.roleInput.value
+        mail : this.mailInput.value
     }
     return obj;
 }

@@ -10,14 +10,16 @@ class UserHandler
     }
     async create(userLoginData,userData)
     {
+        let response = [];
         let encryptionHandler = new EncryptionHandler();
         
-            let encryptedPassword = await encryptionHandler.encryptHashSHA256(userLoginData.password);
-            userLoginData.password = encryptedPassword;
+        let encryptedPassword = await encryptionHandler.encryptHashSHA256(userLoginData.password);
+        userLoginData.password = encryptedPassword;
 
-            //Object.values devuelve array con los valores de las propiedades del objeto
-            this.databaseHandler.callStoredProcedure('addUser',Object.values(userLoginData),Object.values(userData));
-        
+        //Object.values devuelve array con los valores de las propiedades del objeto
+        this.databaseHandler.callStoredProcedure('addUser',Object.values(userLoginData),Object.values(userData));
+        response[0] = true;
+        return response;
     }
     remove(userID)
     {

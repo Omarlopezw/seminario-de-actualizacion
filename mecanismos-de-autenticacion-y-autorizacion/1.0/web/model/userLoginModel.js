@@ -33,7 +33,7 @@ class UserLoginModel extends EventTarget //Hacer modelo observable desde la app
             body: JSON.stringify( registerData ) 
         }
 
-        let request = await fetch( 'http://localhost:8080',fetchData );
+        let request = await fetch( 'http://localhost:8080/signIn',fetchData );
 
         let response = await request.json();
 
