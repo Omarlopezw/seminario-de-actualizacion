@@ -42,8 +42,9 @@ class DataBaseHandler
 
         } else 
         {
-          const pResponseValue = result[0][0];
+          let pResponseValue = result[0][0];
           resolve(pResponseValue); // Resolver la promesa con el valor
+          pResponseValue = '';
         }
       });
     });
@@ -63,6 +64,10 @@ class DataBaseHandler
 
 // console.log('aber',result)
 // db.callStoredProcedure(`addUser`,`juan`,`1321321`);
+// db.callStoredProcedure(`authenticate`,`omaar`,`123456`).then(data =>
+//   {
+//     console.log(data);
+//   });
 // db.callStoredProcedure(`addGroup`,`teachers`,`423424`);
 // db.disconnect();
 
