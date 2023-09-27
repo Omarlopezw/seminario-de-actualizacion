@@ -39,6 +39,20 @@ class UserLoginModel extends EventTarget //Hacer modelo observable desde la app
 
         return response;
     }
+    async getUserData(registerData)
+    {
+        let fetchData = 
+        { 
+            method: 'POST', 
+            body: JSON.stringify( registerData ) 
+        }
+
+        let request = await fetch( 'http://localhost:8080/getUserData',fetchData );
+
+        let response = await request.json();
+
+        return response;
+    }
 }
 
 export { UserLoginModel };
