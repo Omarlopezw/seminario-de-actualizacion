@@ -20,6 +20,24 @@ class DefaultController
             alert('error: incorrect logout')
         }
     }
+    async getUserData()
+    {
+        const response = await this.ModelReference.getUserData();
+
+        if(response.message[0])
+        {
+            console.dir('user data: ' + response.message[1].namee);
+            console.dir('user data: ' + response.message[1].surname);
+            console.dir('user data: ' + response.message[1].dni);
+            console.dir('user data: ' + response.message[1].gender);
+            console.dir('user data: ' + response.message[1].address);
+            console.dir('user data: ' + response.message[1].mail);
+        }
+        else
+        {
+            alert('error: incorrect logout')
+        }
+    }
 
 }
 

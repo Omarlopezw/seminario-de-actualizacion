@@ -10,6 +10,9 @@ class DefaultView extends HTMLElement
         this.mainTitle = document.createElement('h1');
         this.mainTitle.innerText = 'This is a default view';
 
+        this.getDataButton = document.createElement('button');
+        this.getDataButton.innerText = 'get my data';
+
         this.logoutButton = document.createElement('button');
         this.logoutButton.innerText = 'logout';
 
@@ -21,8 +24,10 @@ class DefaultView extends HTMLElement
     connectedCallback()
     {
         this.appendChild(this.mainTitle);
+        this.appendChild(this.getDataButton);
         this.appendChild(this.logoutButton);
 
+        this.getDataButton.onclick = (event)=>{this.innerController.getUserData()}
         this.logoutButton.onclick = (event)=>{this.innerController.onLogoutButtonClick()}
 
     }

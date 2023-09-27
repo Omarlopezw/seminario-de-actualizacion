@@ -32,10 +32,11 @@ class UserHandler
     {
         this.databaseHandler.callStoredProcedure('updateUserdata',updatedColumn,newData,id);
     }
-    read(userID)
+    async read(userID)
     {
-        let response;
-        response = this.databaseHandler.callStoredProcedure('selectUserhasUserdata',userID);
+        let response = [];
+        response[0] = true;
+        response[1] = await this.databaseHandler.callStoredProcedure('selectUserhasUserdata',userID);
         return response;
     }
     getGoupMembership(id)
