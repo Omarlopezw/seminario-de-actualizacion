@@ -24,20 +24,12 @@ class ChatController
                         {
                             for(let message of messagesArray)
                             {
-                                // let decryptMessage = decrypt(sharedKey,message.body);
-
                                 const messageContainer = document.createElement("p");
                                 messageContainer.classList.add('message');
 
-                                alert('message.body.iv' + message.body.iv)
-                                alert('message.body.iv' + message.body.data)
-                                alert('message.body.iv' + sharedKey)
-                                decryptMessage({iv:new Uint8Array(message.body.iv).buffer,data: new Uint8Array(message.body.data).buffer},sharedKey).then((message) => 
+                                decryptMessage({iv:new Uint8Array(Object.values(message.body['iv'])).buffer,data: new Uint8Array(Object.values(message.body['data'])).buffer},sharedKey).then((message) => 
                                 {
-
                                     messageContainer.textContent = `Friend: ${message}`;
-
-                                    alert('mensaeeeeeee' + message);
                                 });
 
                                 const messageHour = document.createElement("span");
