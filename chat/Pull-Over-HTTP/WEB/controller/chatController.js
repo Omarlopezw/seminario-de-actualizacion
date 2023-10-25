@@ -25,19 +25,21 @@ class ChatController
                             for(let message of messagesArray)
                             {
                                 const messageContainer = document.createElement("p");
-                                messageContainer.classList.add('message');
+                                messageContainer.classList.add('received');
+                                
+                                let timeStandReceived = message.timeStandReceived;
 
                                 decryptMessage({iv:new Uint8Array(Object.values(message.body['iv'])).buffer,data: new Uint8Array(Object.values(message.body['data'])).buffer},sharedKey).then((message) => 
                                 {
                                     messageContainer.textContent = `Friend: ${message}`;
+
+                                    const messageHour = document.createElement("span");
+                                    messageHour.classList.add('messageTime');
+                                    messageHour.innerText = `${timeStandReceived}`;
+    
+                                    messageContainer.appendChild(messageHour);
+                                    this.innerView.chatScreen.appendChild(messageContainer);
                                 });
-
-                                const messageHour = document.createElement("span");
-                                messageHour.classList.add('messageTime');
-                                messageHour.innerText = `${message.timeStandReceived}`;
-
-                                messageContainer.appendChild(messageHour);
-                                this.innerView.chatScreen.appendChild(messageContainer);
                             }
                             
                         }
@@ -54,7 +56,6 @@ class ChatController
         let sharedKey = this.getDataInLocalStorage('sharedKey');
         let encryptedMessage = await encryptMessage(message,sharedKey);
         this.encryptedMessage = encryptedMessage;
-        alert(encryptedMessage.data)
         let response = await this.innerModel.sendMessage(encryptedMessage,this.activeChat.id);
 
         if(response['response'])
@@ -62,24 +63,24 @@ class ChatController
             for(let chatMessage of response['messages'])
             {
                 const messageContainer = document.createElement("p");
-                messageContainer.classList.add('message');
+                messageContainer.classList.add('sended');
 
                 decryptMessage(encryptedMessage,sharedKey).then((message) => 
                 {
                     messageContainer.textContent =`You: ${message}`;
+
+                    const messageTilde = document.createElement("span");
+                    messageTilde.innerText = '✔';
+                    messageTilde.classList.add('messaging');
+    
+                    const messageHour = document.createElement("span");
+                    messageHour.classList.add('messageTime');
+                    messageHour.innerText = `${chatMessage.timeStandSend}`;
+                    
+                    messageContainer.appendChild(messageTilde);
+                    messageContainer.appendChild(messageHour);
+                    this.innerView.chatScreen.appendChild(messageContainer);
                 })
-
-                const messageTilde = document.createElement("span");
-                messageTilde.innerText = '✔';
-                messageTilde.classList.add('sended');
-
-                const messageHour = document.createElement("span");
-                messageHour.classList.add('messageTime');
-                messageHour.innerText = `${chatMessage.timeStandSend}`;
-
-                messageContainer.appendChild(messageTilde);
-                messageContainer.appendChild(messageHour);
-                this.innerView.chatScreen.appendChild(messageContainer);
             }
         }
         else

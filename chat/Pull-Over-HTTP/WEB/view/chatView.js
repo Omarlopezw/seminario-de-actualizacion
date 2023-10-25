@@ -83,29 +83,48 @@ class ChatView extends HTMLElement
             padding: 5px 10px;
             cursor: pointer;
             }
-            .message
-            {
-                position: relative;
-                border: 2px solid #0074D9; /* Establece un borde azul de 2 píxeles */
-                background-color: #E5F4FE; /* Establece un fondo azul claro */
-                padding: 10px; /* Agrega relleno alrededor del mensaje */
-                margin: 10px 0; /* Agrega un margen superior e inferior */
-            }
+            // .message
+            // {
+            //     position: relative;
+            //     border: 2px solid #0074D9; /* Establece un borde azul de 2 píxeles */
+            //     background-color: #E5F4FE; /* Establece un fondo azul claro */
+            //     padding: 10px; /* Agrega relleno alrededor del mensaje */
+            //     margin: 10px 0; /* Agrega un margen superior e inferior */
+            // }
                 
-            .sended 
+            .messaging 
             {
                 position: absolute;
                 right: 0; /* Coloca la tilde al final a la derecha */
-                top: 0; /* Ajusta la posición vertical según tus necesidades */
-                color: #009900; /* Cambia el color a tu preferencia */
+                top: 5px; /* Ajusta la posición vertical según tus necesidades */
                 font-size: 20px; /* Ajusta el tamaño de la fuente según tus necesidades */
+                color: blue;
             }
             .messageTime 
             {
                 position: absolute;
                 right: 0; /* Coloca la tilde al final a la derecha */
                 bottom: 0; /* Ajusta la posición vertical según tus necesidades */
-                font-size: 12px; /* Ajusta el tamaño de la fuente según tus necesidades */
+                font-size: 10px; /* Ajusta el tamaño de la fuente según tus necesidades */
+            }
+            .sended 
+            {
+                position: relative;
+                text-align: right; /* Alinea la hora a la derecha */
+                background-color: #00B300; /* Fondo verde */
+                color: #fff; /* Letras blancas */
+                padding: 14px;
+                margin: 5px;
+                border-radius: 10px;
+            }
+            .received
+            {
+                position: relative;
+                background-color: #000; /* Fondo negro */
+                color: #fff; /* Letras blancas */
+                padding: 8px;
+                margin: 5px;
+                border-radius: 10px;
             }
             `
         this.shadowRoot.appendChild(style);
