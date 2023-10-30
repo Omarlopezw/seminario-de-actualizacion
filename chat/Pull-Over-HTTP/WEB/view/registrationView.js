@@ -131,6 +131,8 @@ connectedCallback()
     this.loginBox.appendChild(this.genderBox);
     this.loginBox.appendChild(this.addressBox);
     this.loginBox.appendChild(this.mailBox);
+    this.loginBox.appendChild(this.submitButton);
+    this.loginBox.appendChild(this.backButton);
 
     this.userBox.appendChild(this.usernameInput);
     this.userBox.appendChild(this.labelUsername);

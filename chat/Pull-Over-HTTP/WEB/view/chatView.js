@@ -1,7 +1,6 @@
 import { ChatController } from '../controller/chatController.js';
 import { UserLoginController } from '../controller/userLoginController.js'
-
-
+import { getChatStyle } from './style/styleForWCChatview.js';
 class ChatView extends HTMLElement 
 {
     constructor(model) 
@@ -10,37 +9,77 @@ class ChatView extends HTMLElement
         this.attachShadow( {mode: 'open'});
         this.selectedUser = '';
 
-        this.mainTitle = document.createElement('h1');
-        this.mainTitle.innerText = 'Chat de Usuarios Conectados';
+        this.sidebar = document.createElement('div');
+        this.sidebar.classList.add('sidebar');
 
         this.usernameInput = document.createElement('input');
         this.usernameInput.type = 'text';
 
+        this.dropdown = document.createElement('div');
+        this.dropdown.classList.add('dropdown');
+
+        this.onlineUsersSpan = document.createElement('span');
+        this.onlineUsersSpan.classList.add('onlineusers-span');
+        this.onlineUsersSpan.textContent = 'Online users';
+
+        this.dropdownContent = document.createElement('div');
+        this.dropdownContent.classList.add('dropdown-content');
+
         this.OnlineUsers = document.createElement('ul');
-        this.OnlineUsers.innerText = 'Usuarios en lìnea: ';
 
         this.chatProposalBtn = document.createElement('button');
-        this.chatProposalBtn.innerText = 'Proponer chat: ';
+        this.chatProposalBtn.classList.add('proposal-btn');
+        this.chatProposalBtn.innerText = 'Propose chat: ';
 
         this.logoutButton = document.createElement('button');
+        this.logoutButton.classList.add('logout-button');
         this.logoutButton.innerText = 'Logout';
-
-        this.newLine = document.createElement('br');
 
         this.innerController = new ChatController(this,model);
         this.innerController.getActiveChats();
         this.innerController.getMessage();
         this.innerController.getchatProposals();
+        this.innerController.askForSendedMessage();
 
         //ChatBOX
+
         this.chatContainer = document.createElement('div');
         this.chatContainer.classList.add('chat-container');
-        this.chatScreen = document.createElement('div');
-        this.chatScreen.classList.add('chat-screen');
-        this.chatBox = document.createElement('input');
-        this.chatBox.type = 'text';
+
+        this.menu = document.createElement('div');
+        this.menu.classList.add('menu');
+
+        this.backButton = document.createElement('div');
+        this.backButton.classList.add('back');
+
+        this.backIcon = document.createElement('i');
+        this.backIcon.classList.add('fa-solid', 'fa-chevron-left');
+
+        this.backImage = document.createElement('img');
+        this.backImage.src = 'https://i.imgur.com/DY6gND0.png';
+
+        this.backImage.setAttribute('draggable', 'false');
+
+        this.name = document.createElement('div');
+        this.name.classList.add('name');
+        this.name.textContent = 'Alex';
+
+        this.last = document.createElement('div');
+        this.last.classList.add('last');
+        this.last.textContent = '18:09';
+
+        this.chatList = document.createElement('ol');
+        this.chatList.classList.add('chat');
+
+        this.textInput = document.createElement('input');
+        this.textInput.classList.add('messageInput');
+        this.textInput.setAttribute('type', 'text');
+        this.textInput.setAttribute('placeholder', 'Type here!');
+
+        this.emojis = document.createElement('div');
+        this.emojis.classList.add('emojis');
+
         this.sendMessageBtn = document.createElement('button');
-        this.sendMessageBtn.innerText = 'Enviar mensaje';
         this.sendMessageBtn.classList.add('send-message-btn');
 
         //Chat propose
@@ -51,95 +90,33 @@ class ChatView extends HTMLElement
         this.cancelButton = document.createElement('button');
         this.cancelButton.innerText = 'Cancelar propuesta de chat';
 
+
         let style = document.createElement('style');
-        style.innerText = `.selectedUser
-        {
-            background-color: red;
-        }
-        .chat-container {
-            width: 300px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            }
-            
-            .chat-screen {
-            height: 200px;
-            overflow-y: scroll;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-            }
-            
-            input[type="text"] {
-            width: 80%;
-            padding: 5px;
-            margin-right: 10px;
-            }
-            
-            .send-message-btn {
-            background-color: #0074d9;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            }
-            // .message
-            // {
-            //     position: relative;
-            //     border: 2px solid #0074D9; /* Establece un borde azul de 2 píxeles */
-            //     background-color: #E5F4FE; /* Establece un fondo azul claro */
-            //     padding: 10px; /* Agrega relleno alrededor del mensaje */
-            //     margin: 10px 0; /* Agrega un margen superior e inferior */
-            // }
-                
-            .messaging 
-            {
-                position: absolute;
-                right: 0; /* Coloca la tilde al final a la derecha */
-                top: 5px; /* Ajusta la posición vertical según tus necesidades */
-                font-size: 20px; /* Ajusta el tamaño de la fuente según tus necesidades */
-                color: blue;
-            }
-            .messageTime 
-            {
-                position: absolute;
-                right: 0; /* Coloca la tilde al final a la derecha */
-                bottom: 0; /* Ajusta la posición vertical según tus necesidades */
-                font-size: 10px; /* Ajusta el tamaño de la fuente según tus necesidades */
-            }
-            .sended 
-            {
-                position: relative;
-                text-align: right; /* Alinea la hora a la derecha */
-                background-color: #00B300; /* Fondo verde */
-                color: #fff; /* Letras blancas */
-                padding: 14px;
-                margin: 5px;
-                border-radius: 10px;
-            }
-            .received
-            {
-                position: relative;
-                background-color: #000; /* Fondo negro */
-                color: #fff; /* Letras blancas */
-                padding: 8px;
-                margin: 5px;
-                border-radius: 10px;
-            }
-            `
+        style.innerText = getChatStyle();
+
         this.shadowRoot.appendChild(style);
 
     }
     connectedCallback()
     {
-        this.shadowRoot.appendChild(this.mainTitle);
-        this.shadowRoot.appendChild(this.OnlineUsers);
-        this.shadowRoot.appendChild(this.chatProposalBtn);
-        this.shadowRoot.appendChild(this.newLine);
-        this.shadowRoot.appendChild(this.logoutButton);
-        this.chatContainer.appendChild(this.chatScreen);
-        this.chatContainer.appendChild(this.chatBox);
+        this.shadowRoot.appendChild(this.sidebar);
+        this.sidebar.appendChild(this.dropdown);
+        this.dropdown.appendChild(this.dropdownContent);
+        this.dropdown.appendChild(this.onlineUsersSpan);
+        this.dropdownContent.appendChild(this.OnlineUsers);
+        this.dropdownContent.appendChild(this.chatProposalBtn);
+        this.sidebar.appendChild(this.logoutButton);
+        // this.shadowRoot.appendChild(this.chatContainer)
+        this.chatContainer.appendChild(this.menu);
+        this.chatContainer.appendChild(this.chatList);
+        this.chatContainer.appendChild(this.textInput);
+        this.chatContainer.appendChild(this.emojis);
         this.chatContainer.appendChild(this.sendMessageBtn);
+        this.menu.appendChild(this.backButton);
+        this.menu.appendChild(this.name);
+        this.menu.appendChild(this.last);
+        this.backButton.appendChild(this.backIcon);
+        this.backButton.appendChild(this.backImage);
         this.chatProposalConteiner.appendChild(this.labelChatProposal);
         this.chatProposalConteiner.appendChild(this.confirmButton);
         this.chatProposalConteiner.appendChild(this.cancelButton);
@@ -166,9 +143,18 @@ class ChatView extends HTMLElement
 
         this.sendMessageBtn.onclick = (event) =>
         {
-            this.innerController.sendMessage(this.chatBox.value);
-            this.chatBox.value = '';
+            this.innerController.sendMessage(this.textInput.value);
+            this.textInput.value = '';
         }
+
+        this.textInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') 
+            {
+                this.innerController.sendMessage(this.textInput.value);
+                this.textInput.value = '';
+            }
+        })
+        
 
         this.logoutButton.onclick = (event) =>
         {

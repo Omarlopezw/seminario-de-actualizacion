@@ -29,10 +29,10 @@ export async function encryptMessage(message, key) {
 }
 
 export async function decryptMessage(encryptedMessage, key) {
+  const iv = encryptedMessage.iv;
+  const data = encryptedMessage.data;
   try {
     const encoder = new TextEncoder();
-    const iv = encryptedMessage.iv;
-    const data = encryptedMessage.data;
 
     const cryptoKey = await window.crypto.subtle.importKey(
       "raw",
@@ -54,7 +54,7 @@ export async function decryptMessage(encryptedMessage, key) {
     const decoder = new TextDecoder();
     return decoder.decode(decryptedData);
   } catch (error) {
-    console.error("Decryption error:", error);
+    console.error("Decryption error - Key: " + key, "IV: " + iv, "Data: " + data, error);
     return null; // Handle the error appropriately, e.g., return null or an error message.
   }
 }

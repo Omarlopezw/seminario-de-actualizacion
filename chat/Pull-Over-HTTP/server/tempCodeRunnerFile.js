@@ -1,1 +1,1 @@
-requestBody.message
+getchatProposals

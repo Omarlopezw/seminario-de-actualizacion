@@ -62,7 +62,7 @@ class Server
     {
         const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let llave = '';
-        let longitud = 16;
+        let longitud = 32;
         
         for (let i = 0; i < longitud; i++) 
         {
@@ -125,12 +125,6 @@ class Server
             let origin = request.headers['userid'];
 
             let proposals = this.chat.getchatProposals(origin);
-            console.log('origin in header: ' + origin);
-            console.log('proposals: ' + proposals);
-            // console.log('proposals: ' + proposals[0]['state']);
-            // console.log('id: ' + proposals[0]['id']);
-            // console.log('origin in api: ' + proposals[0]['origin']);
-            // console.log('target: ' + proposals[0]['userTarget']);
             response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
             response.end(JSON.stringify( proposals ));          
         }
@@ -139,8 +133,6 @@ class Server
             let origin = request.headers['userid'];
 
             let activeChats = this.chat.getActiveChats(origin);
-            console.log('origin in header: ' + origin);
-            console.log('activeChats: ' + activeChats);
 
             response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
             response.end(JSON.stringify( activeChats ));          
@@ -192,12 +184,7 @@ class Server
                     let origin = request.headers['userid'];
     
                     this.chat.newChatProposal(origin,requestBody['userTarget']);
-                    
-                    console.log('Cuerpo de la solicitud:', body);
-                    console.log('requestBody:', requestBody);
     
-                    console.log('usuario origin y destino: ' + origin)
-                    // console.log('usuario origin y destino: ' + requestBody.userTarget)
                     response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
                     response.end(JSON.stringify( body ));
                     // response.end(JSON.stringify( requestBody ));
@@ -244,9 +231,6 @@ class Server
     
                     let chat = this.chat.confirmChatProposal(userID,requestBody);
                     this.sharedKey = this.createSharedKey();
-                    console.log('requestBody in confirn:', requestBody);
-                    console.log('userID in confirn:', requestBody);
-                    // console.log('chat:', chat);
     
                     response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
                     response.end(JSON.stringify( body ));
@@ -298,15 +282,12 @@ class Server
                 sessionHandler.logIn( requestBody.username,requestBody.password )
                 .then(DBResponse => 
                 {
-                    console.log('login' + requestBody.username,requestBody.password);
                     const data = { message: DBResponse } 
 
                     this.sessionData.push(DBResponse);
                     this.chat.connectUser(DBResponse.userID);
 
                     response.end(JSON.stringify( data ));
-        
-                    console.log( 'POST response: ', DBResponse )
                 });
     
             });                
@@ -334,9 +315,6 @@ class Server
 
                 response.end(JSON.stringify( data ));
         
-                console.log( 'POST response: ', DBResponse );
-                console.log( 'requestBody: ', requestBody );
-    
             });                
         }
         else if( url == '/signIn' )

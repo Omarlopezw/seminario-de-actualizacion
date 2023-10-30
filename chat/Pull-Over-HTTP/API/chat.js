@@ -19,8 +19,6 @@ class Chat
     }
     newChatProposal(origin,userTarget)
     {
-        console.log('origin in model api: ' + origin);
-        console.log('usertarget in model api: ' + userTarget);
         if((origin && userTarget) !== undefined)
         {
             let chatProposal = {id:this.chatProposals.length+1 ,origin: origin,userTarget: userTarget,state: 'pending'};
@@ -30,8 +28,6 @@ class Chat
     sendMessage(origin,chatReference)
     {
         let obj = {response: false};
-        console.log('origin in model api: ' + origin);
-        console.log('chatReference in model api: ' + chatReference);
         if((origin !== undefined) && chatReference.message != '')
         {
             let searchedObj = this.chatProposals.find(chat => chat.id == chatReference.chatID);
@@ -58,7 +54,6 @@ class Chat
             let messagesArray = chatMessagesMap.get(targetID) || [];
             messagesArray.push(chatMessage)
             chatMessagesMap.set(targetID, messagesArray);
-            console.log('messagesArray' + messagesArray);
             obj['response'] = true;
             obj['messages'] = [messagesArray[messagesArray.length-1]];
             } else {
@@ -93,8 +88,6 @@ class Chat
                     {
                         message.state = 'received';
                     }
-                    console.log('messagesArray: ' + messagesArray);
-                    console.log('messages: ' + messages);
                 } else {
                     console.log('No se encontró un chat con el ID especificado.');
                 }
@@ -122,7 +115,6 @@ class Chat
                     if(chat.state == 'pending' && chat.id == proposalChatResponse['proposalChatID'])
                     {
                         chat.state = 'active';
-                        console.log('chat en model: ' + chat.state);
                         // return chat;
                     }
                 }
@@ -132,7 +124,6 @@ class Chat
     }
     cancelChatProposal(user,proposalChatResponse)
     {
-        console.log('ingresando a cancelChatProposal')
         if((user && proposalChatResponse) !== undefined)
         {
             this.chatProposals.forEach((chat) => {
@@ -141,7 +132,6 @@ class Chat
                     if(chat.state == 'pending' && chat.id == proposalChatResponse['proposalChatID'])
                     {
                         chat.state = 'canceled';
-                        console.log('chat en model: ' + chat.state);
                         // return chat;
                     }
                 }
