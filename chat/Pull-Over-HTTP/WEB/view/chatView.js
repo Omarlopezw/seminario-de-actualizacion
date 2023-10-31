@@ -1,6 +1,8 @@
 import { ChatController } from '../controller/chatController.js';
 import { UserLoginController } from '../controller/userLoginController.js'
 import { getChatStyle } from './style/styleForWCChatview.js';
+import { WCModalView } from './WCModalView.js';
+import { WCQuestionDialog } from './WCQuestionDialog.js';
 class ChatView extends HTMLElement 
 {
     constructor(model) 
@@ -8,6 +10,11 @@ class ChatView extends HTMLElement
         super();
         this.attachShadow( {mode: 'open'});
         this.selectedUser = '';
+
+        //Modal window
+
+        this.modal = new WCModalView();
+        this.question = new WCQuestionDialog();
 
         this.sidebar = document.createElement('div');
         this.sidebar.classList.add('sidebar');
@@ -35,6 +42,7 @@ class ChatView extends HTMLElement
         this.logoutButton.classList.add('logout-button');
         this.logoutButton.innerText = 'Logout';
 
+        //Controller
         this.innerController = new ChatController(this,model);
         this.innerController.getActiveChats();
         this.innerController.getMessage();
@@ -82,15 +90,6 @@ class ChatView extends HTMLElement
         this.sendMessageBtn = document.createElement('button');
         this.sendMessageBtn.classList.add('send-message-btn');
 
-        //Chat propose
-        this.chatProposalConteiner = document.createElement('div');
-        this.labelChatProposal = document.createElement('label');
-        this.confirmButton = document.createElement('button');
-        this.confirmButton.innerText = 'Confirmar propuesta de chat';
-        this.cancelButton = document.createElement('button');
-        this.cancelButton.innerText = 'Cancelar propuesta de chat';
-
-
         let style = document.createElement('style');
         style.innerText = getChatStyle();
 
@@ -106,7 +105,6 @@ class ChatView extends HTMLElement
         this.dropdownContent.appendChild(this.OnlineUsers);
         this.dropdownContent.appendChild(this.chatProposalBtn);
         this.sidebar.appendChild(this.logoutButton);
-        // this.shadowRoot.appendChild(this.chatContainer)
         this.chatContainer.appendChild(this.menu);
         this.chatContainer.appendChild(this.chatList);
         this.chatContainer.appendChild(this.textInput);
@@ -117,9 +115,6 @@ class ChatView extends HTMLElement
         this.menu.appendChild(this.last);
         this.backButton.appendChild(this.backIcon);
         this.backButton.appendChild(this.backImage);
-        this.chatProposalConteiner.appendChild(this.labelChatProposal);
-        this.chatProposalConteiner.appendChild(this.confirmButton);
-        this.chatProposalConteiner.appendChild(this.cancelButton);
         
         this.innerController.getOnlineUsers();
         

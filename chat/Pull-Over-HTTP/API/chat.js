@@ -120,7 +120,7 @@ class Chat
                 }
             });
         }
-        // return null;
+        return true;
     }
     cancelChatProposal(user,proposalChatResponse)
     {
@@ -137,7 +137,7 @@ class Chat
                 }
             });
         }
-        // return null;
+        return false;
     }
     disconnectUser(user)
     {

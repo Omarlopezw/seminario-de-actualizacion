@@ -229,13 +229,11 @@ class Server
                     // Acceder al encabezado "UserID"
                     let userID = request.headers['userid'];
     
-                    let chat = this.chat.confirmChatProposal(userID,requestBody);
+                    let chatResponse = this.chat.confirmChatProposal(userID,requestBody);
                     this.sharedKey = this.createSharedKey();
     
                     response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
-                    response.end(JSON.stringify( body ));
-                    // response.end(JSON.stringify( requestBody ));
-                
+                    response.end(JSON.stringify( chatResponse ));                
             });          
         }
         else if( url == '/cancelChatProposal'  )
@@ -252,16 +250,10 @@ class Server
                     // Acceder al encabezado "UserID"
                     let userID = request.headers['userid'];
     
-                    let chat = this.chat.cancelChatProposal(userID,requestBody);
-                    
-                    console.log('requestBody in cancel:', requestBody);
-                    console.log('userID in cancel:', requestBody);
-                    // console.log('chat:', chat);
+                    let chatResponse = this.chat.cancelChatProposal(userID,requestBody);
     
                     response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
-                    response.end(JSON.stringify( body ));
-                    // response.end(JSON.stringify( requestBody ));
-                
+                    response.end(JSON.stringify( chatResponse ));
             });          
         }
         else if( url == '/login'  )

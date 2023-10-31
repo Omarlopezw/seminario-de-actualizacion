@@ -1,8 +1,6 @@
 let getChatStyle = () =>
 {
     return `
-    @import url(https://fonts.googleapis.com/css?family=Lato:100,300,400,700);
-    @import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
 
     html, body {
         background: #e5e5e5;
@@ -21,7 +19,7 @@ let getChatStyle = () =>
         top: 0px;
         // left: 0px;
         right: 0px;
-        width: 80%;
+        width: 85%;
         height: 50px;
         background: rgba(82,179,217,0.9);
         z-index: 100;
@@ -302,7 +300,7 @@ let getChatStyle = () =>
         bottom: 0px;
         // left: 0px;
         right: 0px;
-        width: 70%;
+        width: 75%;
         height: 50px;
         z-index: 99;
         background: #fafafa;
@@ -314,21 +312,20 @@ let getChatStyle = () =>
         color: #666;
         font-weight: 400;
     }
-
-    .emojis 
-    {
+    .emojis {
         position: fixed;
         display: block;
         bottom: 8px;
-        left: 250;
-        width: 34px;
-        height: 34px;
+        left: 16%;
+        width: 3%; /* Adjust the width percentage to make it smaller */
+        padding-top: 3%; /* Adjust the aspect ratio */
         background-image: url(https://i.imgur.com/5WUpcPZ.png);
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: contain;
         z-index: 100;
         cursor: pointer;
     }
+    
     .emojis:active {
         opacity: 0.9;
     }
@@ -422,10 +419,10 @@ let getChatStyle = () =>
             position: fixed;
             top: 50px; /* Altura del menú */
             left: 0px;
-            width: 20%; /* Ancho del sidebar */
+            width: 15%; /* Ancho del sidebar */
             height: 120%; /* Ocupará toda la altura disponible */
             background: #253668; /* Color de fondo del sidebar */
-            z-index: 99; /* Asegura que el sidebar esté por debajo del menú */
+            z-index: 100; /* Asegura que el sidebar esté por debajo del menú */
             padding-top: 20px; /* Espacio superior para evitar solapamiento con el menú */
         }
         

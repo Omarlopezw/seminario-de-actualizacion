@@ -179,23 +179,34 @@ class ChatController
                 {
                     let chatProposalResponse = {};
 
-                    this.innerView.labelChatProposal.innerText = `Usuario '${chatProposals[0].origin}' te propone chat`
-                    this.innerView.shadowRoot.appendChild(this.innerView.chatProposalConteiner);
-                    clearInterval(this.proposalsIntervalID);
+                    this.innerView.question.setOptions({ titleText:`Usuario '${chatProposals[0].origin}' te propone chat`, 
+                    questionText:'Aceptar o cancelar propuesta de chat', confirmText:'Confirm', cancelText:'Cancel'});
 
-                    this.innerView.confirmButton.onclick = () => 
+                    this.innerView.modal.setContent(this.innerView.question);
+                
+                    this.innerView.modal.open();
+
+                    this.innerView.question.getResponse().then
+                    ((response)=>
                     {
-                        
-                        chatProposalResponse['response'] = true;
-                        chatProposalResponse['proposalChatID'] = chatProposals[0].id;
-                        this.confirmChatProposal(chatProposalResponse);
-                    };
-                    this.innerView.cancelButton.onclick = () => 
-                    {
-                        chatProposalResponse['response'] = false;
-                        chatProposalResponse['proposalChatID'] = chatProposals[0].id;
-                        this.cancelChatProposal(chatProposalResponse);
-                    };
+                        if(response == true)
+                        {
+                            alert('response confirmChatProposal' + response);
+                            clearInterval(this.proposalsIntervalID);
+                            chatProposalResponse['response'] = true;
+                            chatProposalResponse['proposalChatID'] = chatProposals[0].id;
+                            this.confirmChatProposal(chatProposalResponse);
+                        }
+                        else
+                        {
+                            alert('response cancelChatProposal' + response);
+                            chatProposalResponse['response'] = false;
+                            chatProposalResponse['proposalChatID'] = chatProposals[0].id;
+                            this.cancelChatProposal(chatProposalResponse);
+                        }
+
+                        this.innerView.modal.close();
+                    })
                 }
                 else
                 {
@@ -207,13 +218,11 @@ class ChatController
     async confirmChatProposal(chatProposalResponse)
     {
         let response = await this.innerModel.confirmChatProposal(chatProposalResponse);
-        this.innerView.shadowRoot.removeChild(this.innerView.chatProposalConteiner);
         return response;
     }
     async cancelChatProposal(chatProposalResponse)
     {
         let response = await this.innerModel.cancelChatProposal(chatProposalResponse);
-        this.innerView.shadowRoot.removeChild(this.innerView.chatProposalConteiner);
         return response;
     }
     saveInLocalStorage(key,data)
