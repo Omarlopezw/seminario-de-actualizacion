@@ -1,1 +1,1 @@
-getchatProposals
+EncryptionHandler

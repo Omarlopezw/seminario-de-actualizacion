@@ -8,7 +8,10 @@ constructor(model)
     super();
 
     this.loginBox = document.createElement('div');
-    this.loginBox.classList.add('login-box')
+    this.loginBox.classList.add('signin-box')
+
+    this.userBoxContainer = document.createElement('div');
+    this.userBoxContainer.classList.add('user-box-container')
 
     this.mainTitle = document.createElement('h2');
     this.mainTitle.innerText = 'Registration';
@@ -121,18 +124,19 @@ constructor(model)
 connectedCallback()
 {
     this.appendChild(this.loginBox);
-    this.loginBox.appendChild(this.mainTitle);
-    this.loginBox.appendChild(this.userBox);
-    this.loginBox.appendChild(this.passwordBox);
-    this.loginBox.appendChild(this.nameBox);
-    this.loginBox.appendChild(this.surnameBox);
-    this.loginBox.appendChild(this.dniBox);
-    this.loginBox.appendChild(this.telephoneBox);
-    this.loginBox.appendChild(this.genderBox);
-    this.loginBox.appendChild(this.addressBox);
-    this.loginBox.appendChild(this.mailBox);
-    this.loginBox.appendChild(this.submitButton);
-    this.loginBox.appendChild(this.backButton);
+    this.loginBox.appendChild(this.userBoxContainer);
+    this.userBoxContainer.appendChild(this.mainTitle);
+    this.userBoxContainer.appendChild(this.userBox);
+    this.userBoxContainer.appendChild(this.passwordBox);
+    this.userBoxContainer.appendChild(this.nameBox);
+    this.userBoxContainer.appendChild(this.surnameBox);
+    this.userBoxContainer.appendChild(this.dniBox);
+    this.userBoxContainer.appendChild(this.telephoneBox);
+    this.userBoxContainer.appendChild(this.genderBox);
+    this.userBoxContainer.appendChild(this.addressBox);
+    this.userBoxContainer.appendChild(this.mailBox);
+    this.userBoxContainer.appendChild(this.submitButton);
+    this.userBoxContainer.appendChild(this.backButton);
 
     this.userBox.appendChild(this.usernameInput);
     this.userBox.appendChild(this.labelUsername);

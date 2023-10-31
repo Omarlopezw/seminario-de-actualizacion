@@ -3,6 +3,7 @@
 const http = require('http');
 const {Chat} = require('../API/chat.js');
 const { SessionHandler } = require("../API/sessionHandler.js") 
+const { UserHandler } = require("../API/userHandler.js") 
 const { EncryptionHandler } = require("../API/encryptionHandler.js") 
 const { DataBaseHandler } = require("../API/database.js")
 const file =  require("../API/Config.js")

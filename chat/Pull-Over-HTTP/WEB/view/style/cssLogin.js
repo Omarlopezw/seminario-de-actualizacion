@@ -199,6 +199,109 @@ function CSSLogin()
         bottom: 100%;
     }
     }
+    .signin-box {
+        position: absolute;
+        color: #fff;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px; /* Make it wider */
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        box-sizing: border-box;
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center-align content horizontally */
+    }
+    
+    .signin-box .user-box-container {
+        display: flex;
+        flex-wrap: wrap; /* Allow user boxes to wrap to the next row */
+        justify-content: space-between; /* Distribute user boxes evenly */
+        width: 100%; /* Ensure the user boxes take up the full width */
+    }
+    
+    .signin-box .user-box {
+        width: calc(33.33% - 20px); /* Calculate the width for three user boxes per row with margin */
+        margin-bottom: 20px;
+    }
+    
+    .signin-box .user-box label {
+        font-size: 16px;
+        color: #fff;
+        pointer-events: none;
+        transition: 0.5s;
+        opacity: 0.7;
+        position: relative;
+        top: -20px;
+    }
+    
+    .signin-box .user-box input {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        color: #fff;
+        border: none;
+        border-bottom: 1px solid #fff;
+        outline: none;
+        background: transparent;
+    }
+    
+
+    .signin-box button 
+    {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    color: #03e9f4;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 40px;
+    letter-spacing: 4px;
+    background-color: transparent;
+    border: none;
+    }
+    .signin-box button 
+    {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    color: #03e9f4;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 40px;
+    letter-spacing: 4px;
+    background-color: transparent;
+    border: none;
+    }
+    .signin-box .user-box input:focus ~ label,
+    .signin-box .user-box input:valid ~ label 
+    {
+        top: -20px;
+        left: 0;
+        color: #03e9f4;
+        font-size: 12px;
+        !important
+    }
+    .signin-box button:hover 
+    {
+    background: #03e9f4;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #03e9f4,
+                0 0 25px #03e9f4,
+                0 0 50px #03e9f4,
+                0 0 100px #03e9f4;
+    }
+    
     `
 }
 
