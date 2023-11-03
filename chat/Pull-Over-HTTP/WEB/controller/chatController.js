@@ -12,6 +12,7 @@ class ChatController
         
         model.init();
         model.addEventListener('message',(event)=> { this.onGetMessage(event) });
+        model.addEventListener('proposal',(event)=> { this.onGetChatProposal(event) });
     }
     askForSendedMessage()
     {
@@ -107,49 +108,18 @@ async onSendMessage(message)
     {
         this.innerModel.proposeChat(userTarget);
     }
-    async getchatProposals()
+/**
+ *  @brief obtiene las propuestas de chat...
+ * 
+ * @param {object} event - Objeto con array de propuestas de chat.
+ * 
+ * @return {void}
+ **/
+    async onGetChatProposal(event)
     {
-        // let intervalId = null; 
-        this.proposalsIntervalID = setInterval(() => {this.innerModel.getchatProposals().then
-            ((chatProposals) => {
-                
-                if (chatProposals.length !== 0) 
-                {
-                    let chatProposalResponse = {};
-
-                    this.innerView.question.setOptions({ titleText:`Usuario '${chatProposals[0].origin}' te propone chat`, 
-                    questionText:'Aceptar o cancelar propuesta de chat', confirmText:'Confirm', cancelText:'Cancel'});
-
-                    this.innerView.modal.setContent(this.innerView.question);
-                
-                    this.innerView.modal.open();
-
-                    this.innerView.question.getResponse().then
-                    ((response)=>
-                    {
-                        if(response == true)
-                        {
-                            clearInterval(this.proposalsIntervalID);
-                            chatProposalResponse['response'] = true;
-                            chatProposalResponse['proposalChatID'] = chatProposals[0].id;
-                            this.confirmChatProposal(chatProposalResponse);
-                        }
-                        else
-                        {
-                            chatProposalResponse['response'] = false;
-                            chatProposalResponse['proposalChatID'] = chatProposals[0].id;
-                            this.cancelChatProposal(chatProposalResponse);
-                        }
-
-                        this.innerView.modal.close();
-                    })
-                }
-                else
-                {
-                    console.log('sin propuestas de chat');
-                }
-            })
-        }, 5000);
+        let proposals = event.detail
+        
+        this.innerView.showModalWindow(proposals);
     }
     async confirmChatProposal(chatProposalResponse)
     {

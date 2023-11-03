@@ -45,7 +45,7 @@ class ChatView extends HTMLElement
         //Controller
         this.innerController = new ChatController(this,model);
         this.innerController.getActiveChats();
-        this.innerController.getchatProposals();
+        // this.innerController.getchatProposals();
         this.innerController.askForSendedMessage();
 
         //ChatBOX
@@ -224,6 +224,44 @@ class ChatView extends HTMLElement
         messageContainer.appendChild(messageTilde);
         messageContainer.appendChild(messageHour);
         this.chatList.appendChild(messageContainer);
+    }
+/**
+ * @brief Muestra la ventana modal cuando hay una propuesta...
+ * 
+ * @param {object} proposal - Objeto con array de propuestas de chat.
+ * 
+ * @return {void}
+ */
+    showModalWindow(proposals)
+    {
+        let chatProposalResponse = {};
+
+        this.question.setOptions({ titleText:`Usuario '${proposals[0].origin}' te propone chat`, 
+        questionText:'Aceptar o cancelar propuesta de chat', confirmText:'Confirm', cancelText:'Cancel'});
+
+        this.modal.setContent(this.question);
+    
+        this.modal.open();
+
+        this.question.getResponse().then
+        ((response)=>
+        {
+            if(response == true)
+            {
+                chatProposalResponse['response'] = true;
+                chatProposalResponse['proposalChatID'] = proposals[0].id;
+                this.innerController.confirmChatProposal(chatProposalResponse);
+            }
+            else
+            {
+                chatProposalResponse['response'] = false;
+                chatProposalResponse['proposalChatID'] = proposals[0].id;
+                this.innerController.cancelChatProposal(chatProposalResponse);
+            }
+
+            this.modal.close();
+        })
+
     }
 }
 

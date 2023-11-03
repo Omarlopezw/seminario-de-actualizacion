@@ -12,14 +12,15 @@ class ChatModel extends EventTarget
     {
         console.log('init setInterval');
 
-        // setInterval(function() 
-        // {
-        //     this.getMessage(this.activeChat);
-        // }.bind(this), 5000);
         setInterval(() =>
         {
             this.getMessage(this.activeChat);
         }, 5000);
+
+        setInterval(()=>
+        {
+            this.getchatProposals();
+        },5000)
     }
     async getMessage(chatID)
     {
@@ -91,7 +92,13 @@ class ChatModel extends EventTarget
 
         let request = await fetch( 'http://localhost:8080/getchatProposals',fetchData );
 
+        
         let response = await request.json();
+
+        if (response.length !== 0)
+        {
+            this.dispatchEvent(new CustomEvent('proposal',{detail: response}));
+        }
         
         return response;
     }
