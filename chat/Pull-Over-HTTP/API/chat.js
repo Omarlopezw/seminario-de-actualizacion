@@ -56,7 +56,9 @@ class Chat
             chatMessagesMap.set(targetID, messagesArray);
             obj['response'] = true;
             obj['messages'] = [messagesArray[messagesArray.length-1]];
-            } else {
+            console.log('api chat2: ' + obj['messages'][0].timeStandSend);
+
+        } else {
                 console.log('no existe id')
             }
         }
@@ -89,7 +91,7 @@ class Chat
                         message.state = 'received';
                     }
                 } else {
-                    console.log('No se encontró un chat con el ID especificado.');
+                    console.log(`No se encontró un chat con el ID especificado. ${chatID}`);
                 }
             }
         }

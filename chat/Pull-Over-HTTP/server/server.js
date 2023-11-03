@@ -1,6 +1,8 @@
 
 //backend server
 const http = require('http');
+const express = require('express');
+
 const {Chat} = require('../API/chat.js');
 const { SessionHandler } = require("../API/sessionHandler.js") 
 const { UserHandler } = require("../API/userHandler.js") 
@@ -85,8 +87,6 @@ class Server
         let url = request.url;
         const key = method + url;
 
-        // console.log('key: ' + key );
-        // console.log('url: ' + url );
 
         // if (!this.resources[key]) 
         // {
@@ -108,8 +108,6 @@ class Server
                 let requestBody = JSON.parse(body);
                 // let data = {username: requestBody.username}
                 this.chat.connectedUser(requestBody);
-                console.log('response: ' + body)
-                console.log('response2: ' + requestBody)
                 response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
                 response.end(JSON.stringify( requestBody ));
             });                
@@ -117,7 +115,6 @@ class Server
         else if( url == '/getOnlineUsers'  )
         {
             let data = this.chat.getOnlineUser();
-            console.log('ARRAY: ' + data);
             response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
             response.end(JSON.stringify( data ));          
         }
@@ -140,8 +137,6 @@ class Server
         }
         else if( url == '/getSharedKey'  )
         {
-            console.log('sharedKey: ' + this.sharedKey);
-
             response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
             response.end(JSON.stringify( this.sharedKey ));          
         }
@@ -160,9 +155,6 @@ class Server
                     let userID = request.headers['userid'];
     
                     let receivedMessage = this.chat.getMessage(userID,requestBody);
-
-                    console.log('Chatid:', requestBody);
-                    console.log('userID in confirn:', userID);
     
                     response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
                     response.end(JSON.stringify( receivedMessage ));
@@ -205,14 +197,18 @@ class Server
                     let requestBody = body ? JSON.parse(body) : {};
                     // Acceder al encabezado "UserID"
                     let userID = request.headers['userid'];
-    
-                    let sendedMessage = this.chat.sendMessage(userID,requestBody);
 
-                    console.log('Cuerpo del mensaje:', requestBody.message);
-                    console.log('userID in confirn:', userID);
-    
+                    let messageSent = this.chat.sendMessage(userID,requestBody);
+
+                    if(messageSent['response'] != false)
+                    {
+                        console.log('api chat: ' + JSON.stringify(messageSent, null, 2));
+
+                        console.log('server chat: ' + messageSent['messages'][0].timeStandSend);
+                    }
+
                     response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
-                    response.end(JSON.stringify( sendedMessage ));
+                    response.end(JSON.stringify( messageSent ));
                 
             });          
         }
@@ -345,7 +341,6 @@ class Server
 
                     response.end(JSON.stringify( data ));
         
-                    console.log( 'POST response: ', DBResponse )
                 });
     
             });                

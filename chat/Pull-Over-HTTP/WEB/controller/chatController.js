@@ -9,7 +9,9 @@ class ChatController
         this.activeChat = undefined;
         this.encryptedMessage = '';
         this.proposalsIntervalID = null;
-        this.sharedKey = '';
+        
+        model.init();
+        model.addEventListener('message',(event)=> { this.onGetMessage(event) });
     }
     askForSendedMessage()
     {
@@ -20,101 +22,39 @@ class ChatController
 
         // }
     }
-    async getMessage()
-    {
-        let intervalId = null; 
-        let sharedKey = await this.getDataInLocalStorage('sharedKey');
-            setInterval(() => {
-                if(this.activeChat != undefined )
-                {
-                    this.innerModel.getMessage(this.activeChat.id).then
-                    ((messagesArray) => {
-                        
-                        console.log(messagesArray);
-                        if (messagesArray.length !== 0) 
-                        {
-                            for(let message of messagesArray)
-                            {
-                                const messageContainer = document.createElement("li");
-                                messageContainer.classList.add('received');
-                                
-                                let timeStandReceived = message.timeStandReceived;
-
-                                const ivArray = new Uint8Array(Object.values(message.body['iv']));
-                                const dataArray = new Uint8Array(Object.values(message.body['data']));
-
-                                const ivBuffer = ivArray.buffer;
-                                const dataBuffer = dataArray.buffer;
-                                // decryptMessage({iv:new Uint8Array(Object.values(message.body['iv'])).buffer,data: new Uint8Array(Object.values(message.body['data'])).buffer},sharedKey).then((message) => 
-                                decryptMessage({ iv: ivBuffer, data: dataBuffer }, sharedKey).then((message) => 
-                                {
-                                    messageContainer.textContent = `Friend: ${message}`;
-
-                                    const messageHour = document.createElement("span");
-                                    messageHour.classList.add('messageTime');
-                                    messageHour.innerText = `${timeStandReceived}`;
-    
-                                    messageContainer.appendChild(messageHour);
-                                    this.innerView.chatList.appendChild(messageContainer);
-                                });
-                            }
-                            
-                        }
-                    })
-                }
-                else
-                {
-                    console.log('Ningun chat activo');
-                }
-            }, 5000);
-    }
-    async sendMessage(message)
+/**  
+ *  @brief recibe mensaje desencriptado para delegarlo en la vista...
+ * 
+ * @param {Promise<object>} event {detail.message}
+ * 
+ * @return {void}
+ **/
+async onGetMessage(event)
 {
-        // let sharedKey = this.getDataInLocalStorage('sharedKey');
-        this.sharedKey = await this.getDataInLocalStorage('sharedKey');
-        if(message != '')
-        {
-            let encryptedMessage = await encryptMessage(message,this.sharedKey);
-            let response = await this.innerModel.sendMessage(encryptedMessage,this.activeChat.id);
-            if(response['response'])
-            {
-                for(let chatMessage of response['messages'])
-                {
-                    const messageContainer = document.createElement("li");
-                    messageContainer.classList.add('sended');
-                    this.encryptedMessage = encryptedMessage;
-                    decryptMessage(encryptedMessage,this.sharedKey).then((message) => 
-                    {
-                        messageContainer.textContent =`You: ${message}`;
-    
-                        const messageTilde = document.createElement("span");
-                        messageTilde.innerText = '✔';
-                        messageTilde.classList.add('messaging');
-        
-                        const messageHour = document.createElement("span");
-                        messageHour.classList.add('messageTime');
-                        messageHour.innerText = `${chatMessage.timeStandSend}`;
-                        
-                        messageContainer.appendChild(messageTilde);
-                        messageContainer.appendChild(messageHour);
-                        this.innerView.chatList.appendChild(messageContainer);
-                    })
-                }
-            }
-        }
-        else
-        {
-            alert('Mensaje vacio');
-        }
+    let message = await event.detail.message;
 
-    }
+    this.innerView.addReplyMessageOnChat(message);
+}
+/**  
+ *  @brief envia mensaje...
+ * 
+ * @param {string} message
+ * 
+ * @return {Promise<object>}
+ **/
+async onSendMessage(message)
+{
+    let response = await this.innerModel.sendMessage(message);
+
+    return response;
+}
+
     getActiveChats()
     {
         let intervalId = null; 
         intervalId = setInterval(() => {this.innerModel.getActiveChats().then
             ((activeChats) => {
                 
-                console.log('activeChats' + activeChats);
                 if (activeChats.length !== 0) 
                 {
                     this.activeChat = activeChats[0];
@@ -142,7 +82,6 @@ class ChatController
             {
                 const onlineUser = document.createElement('li');
                 onlineUser.textContent = user;
-                console.log('USER: ' + user);
                 this.innerView.OnlineUsers.appendChild(onlineUser);
             }
         }
@@ -174,7 +113,6 @@ class ChatController
         this.proposalsIntervalID = setInterval(() => {this.innerModel.getchatProposals().then
             ((chatProposals) => {
                 
-                console.log(chatProposals);
                 if (chatProposals.length !== 0) 
                 {
                     let chatProposalResponse = {};
@@ -191,7 +129,6 @@ class ChatController
                     {
                         if(response == true)
                         {
-                            alert('response confirmChatProposal' + response);
                             clearInterval(this.proposalsIntervalID);
                             chatProposalResponse['response'] = true;
                             chatProposalResponse['proposalChatID'] = chatProposals[0].id;
@@ -199,7 +136,6 @@ class ChatController
                         }
                         else
                         {
-                            alert('response cancelChatProposal' + response);
                             chatProposalResponse['response'] = false;
                             chatProposalResponse['proposalChatID'] = chatProposals[0].id;
                             this.cancelChatProposal(chatProposalResponse);

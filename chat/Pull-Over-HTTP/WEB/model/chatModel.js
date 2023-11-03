@@ -1,9 +1,25 @@
+import { encryptMessage,decryptMessage } from "../utils/encrypting.js";
 
 class ChatModel extends EventTarget
 {
     constructor()
     {
         super();
+        this.sharedKey = undefined;
+        this.activeChat = undefined;
+    }
+    init()
+    {
+        console.log('init setInterval');
+
+        // setInterval(function() 
+        // {
+        //     this.getMessage(this.activeChat);
+        // }.bind(this), 5000);
+        setInterval(() =>
+        {
+            this.getMessage(this.activeChat);
+        }, 5000);
     }
     async getMessage(chatID)
     {
@@ -22,11 +38,25 @@ class ChatModel extends EventTarget
         let request = await fetch( 'http://localhost:8080/getMessage',fetchData );
 
         let response = await request.json();
+
+        for(let message of response)
+        {
+            const ivArray = new Uint8Array(Object.values(message.body['iv']));
+            const dataArray = new Uint8Array(Object.values(message.body['data']));
+
+            const ivBuffer = ivArray.buffer;
+            const dataBuffer = dataArray.buffer;
+
+            message.body = decryptMessage({ iv: ivBuffer, data: dataBuffer }, this.sharedKey)
+
+            this.dispatchEvent(new CustomEvent('message',{detail: {message}}));
+        }
+
         return response;
     }
-    async sendMessage(message,chatID)
+    async sendMessage(message)
     {
-        // alert(`Mensaje ${message} + chat id ${chatID}`);
+        // alert(`model Mensaje ${message} + chat id ${this.activeChat}`);
         let sessionData = this.getSessionData();
         
         let fetchData = 
@@ -36,7 +66,7 @@ class ChatModel extends EventTarget
                 'Content-Type': 'application/json',
                 'userid': sessionData.userID,
             },
-            body: JSON.stringify({message: message,chatID: chatID}), 
+            body: JSON.stringify({message: await encryptMessage(message,this.sharedKey),chatID: this.activeChat}), 
         };
 
         let request = await fetch( 'http://localhost:8080/sendMessage',fetchData );
@@ -142,6 +172,15 @@ class ChatModel extends EventTarget
 
         let response = await request.json();
 
+        if (response[0] && response[0].id) 
+        {
+            this.activeChat = response[0].id;
+        } 
+        else 
+        {
+            this.activeChat = '';
+        }
+
         return response;
     }
     async getSharedKey()
@@ -158,6 +197,8 @@ class ChatModel extends EventTarget
         let request = await fetch( 'http://localhost:8080/getSharedKey',fetchData );
 
         let response = await request.json();
+
+        this.sharedKey = response;
 
         return response;
     }

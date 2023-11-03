@@ -45,7 +45,6 @@ class ChatView extends HTMLElement
         //Controller
         this.innerController = new ChatController(this,model);
         this.innerController.getActiveChats();
-        this.innerController.getMessage();
         this.innerController.getchatProposals();
         this.innerController.askForSendedMessage();
 
@@ -138,15 +137,13 @@ class ChatView extends HTMLElement
 
         this.sendMessageBtn.onclick = (event) =>
         {
-            this.innerController.sendMessage(this.textInput.value);
-            this.textInput.value = '';
+            this.sendMessage();
         }
 
         this.textInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') 
             {
-                this.innerController.sendMessage(this.textInput.value);
-                this.textInput.value = '';
+                this.sendMessage();
             }
         })
         
@@ -156,6 +153,77 @@ class ChatView extends HTMLElement
             this.innerController.onLogoutButtonClick();
         }
 
+    }
+
+/**  
+ *  @brief escribe mensaje de respuesta en el chat...
+ * 
+ * @param {Promise<object>} replyMessage {message}
+ * 
+ * @return {void}
+**/
+    async addReplyMessageOnChat(replyMessage)
+    {
+        let message = await replyMessage;
+
+        const messageContainer = document.createElement("li");
+        messageContainer.classList.add('received');
+
+        messageContainer.textContent = `Friend: ${ await message.body}`;
+
+        const messageHour = document.createElement("span");
+        messageHour.classList.add('messageTime');
+        messageHour.innerText = `${message.timeStandReceived}`;
+
+        messageContainer.appendChild(messageHour);
+        this.chatList.appendChild(messageContainer);
+    }
+/**  
+ *  @brief envia mensaje...
+ *  
+ **/
+    async sendMessage() 
+    {
+        if (this.textInput.value != '') 
+        {
+            let objMessage = this.innerController.onSendMessage(this.textInput.value);
+
+            this.addMessageSentOnChat(this.textInput.value, objMessage);
+
+            this.textInput.value = '';
+        } 
+        else 
+        {
+            alert('Mensaje vacío');
+        }
+    }  
+/**
+ * @brief Escribe el mensaje enviado en el chat.
+ * 
+ * @param {string} messageSent - El mensaje que se envió.
+ * @param {Promise<object>} objMessage - Un objeto Promise que representa el mensaje con demas atributos.
+ * 
+ * @return {void}
+ */
+    async addMessageSentOnChat(messageSent,objMessage)
+    {
+        let messages = await objMessage;
+
+        const messageContainer = document.createElement("li");
+        messageContainer.classList.add('sended');
+        messageContainer.textContent =`You: ${messageSent}`;
+
+        const messageTilde = document.createElement("span");
+        messageTilde.innerText = '✔';
+        messageTilde.classList.add('messaging');
+
+        const messageHour = document.createElement("span");
+        messageHour.classList.add('messageTime');
+        messageHour.innerText = `${messages['messages'][0].timeStandSend}`;
+        
+        messageContainer.appendChild(messageTilde);
+        messageContainer.appendChild(messageHour);
+        this.chatList.appendChild(messageContainer);
     }
 }
 
