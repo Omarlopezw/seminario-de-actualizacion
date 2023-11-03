@@ -1,5 +1,3 @@
-import { encryptMessage,decryptMessage } from "../utils/encrypting.js";
-
 class ChatController
 {
     constructor(view,model)
@@ -7,12 +5,11 @@ class ChatController
         this.innerView = view;
         this.innerModel = model;
         this.activeChat = undefined;
-        this.encryptedMessage = '';
-        this.proposalsIntervalID = null;
         
         model.init();
         model.addEventListener('message',(event)=> { this.onGetMessage(event) });
         model.addEventListener('proposal',(event)=> { this.onGetChatProposal(event) });
+        model.addEventListener('activeChat',(event)=> { this.onGetActiveChats(event) });
     }
     askForSendedMessage()
     {
@@ -49,43 +46,27 @@ async onSendMessage(message)
 
     return response;
 }
-
-    getActiveChats()
+/**
+ *  @brief obtiene los chats activos...
+ * 
+ * @param {Promise<object>} event
+ * 
+ * @return {void} 
+ **/
+    onGetActiveChats(event)
     {
-        let intervalId = null; 
-        intervalId = setInterval(() => {this.innerModel.getActiveChats().then
-            ((activeChats) => {
-                
-                if (activeChats.length !== 0) 
-                {
-                    this.activeChat = activeChats[0];
-                    clearInterval(intervalId);
-                    this.innerModel.getSharedKey().then((sharedKey)=>{this.saveInLocalStorage('sharedKey',sharedKey);});
-                    this.innerView.shadowRoot.appendChild(this.innerView.chatContainer);
-                }
-            })
-        }, 5000);
-
+        this.innerView.showActiveChat();
     }
-    async getOnlineUsers()
+/**
+ *  @brief obtiene los usuarios en linea...
+ * 
+ * @return {Promise<Array<userID>>} 
+ **/
+    async onGetOnlineUsers()
     {
-        let sessionData = this.getDataInLocalStorage('sessionData');
-        let userID = sessionData.userID;
-        // Elimina todos los elementos de la lista OnlineUsers (ul) existentes.
-        while (this.innerView.OnlineUsers.firstChild) 
-        {
-            this.innerView.OnlineUsers.removeChild(this.innerView.OnlineUsers.firstChild);
-        }
         let users = await this.innerModel.getOnlineUsers();
-        for (const user of users) 
-        {
-            if(user !== userID)
-            {
-                const onlineUser = document.createElement('li');
-                onlineUser.textContent = user;
-                this.innerView.OnlineUsers.appendChild(onlineUser);
-            }
-        }
+
+        return users;
     }
     async onLogoutButtonClick()
     {

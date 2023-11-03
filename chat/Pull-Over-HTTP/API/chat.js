@@ -11,11 +11,22 @@ class Chat
     }
     connectUser(user)
     {
-        this.onlineUserList.push(user);
+        // Verifica si el array contiene un objeto con el ID específico
+        const isActive = this.onlineUserList.some(userID => userID === user);
+
+        if (isActive) 
+        {
+            console.log(`Usuario con ID ${user} ya existe en el array.`);
+        }
+        else 
+        {
+            console.log(`Usuario con ID ${user} no existe en el array.`);
+            this.onlineUserList.push(user);
+        }
     }
-    getOnlineUser()
+    getOnlineUser(origin)
     {
-        return this.onlineUserList;
+        return this.onlineUserList.filter((user) => (user != origin));
     }
     newChatProposal(origin,userTarget)
     {

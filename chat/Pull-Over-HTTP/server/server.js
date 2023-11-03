@@ -114,7 +114,9 @@ class Server
         }
         else if( url == '/getOnlineUsers'  )
         {
-            let data = this.chat.getOnlineUser();
+            let origin = request.headers['userid'];
+
+            let data = this.chat.getOnlineUser(origin);
             response.writeHead(200,{'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
             response.end(JSON.stringify( data ));          
         }

@@ -44,8 +44,6 @@ class ChatView extends HTMLElement
 
         //Controller
         this.innerController = new ChatController(this,model);
-        this.innerController.getActiveChats();
-        // this.innerController.getchatProposals();
         this.innerController.askForSendedMessage();
 
         //ChatBOX
@@ -115,7 +113,8 @@ class ChatView extends HTMLElement
         this.backButton.appendChild(this.backIcon);
         this.backButton.appendChild(this.backImage);
         
-        this.innerController.getOnlineUsers();
+        let users = this.innerController.onGetOnlineUsers();
+        this.showOnlineUsers(users);
         
         this.chatProposalBtn.onclick = (event) =>
         {
@@ -262,6 +261,28 @@ class ChatView extends HTMLElement
             this.modal.close();
         })
 
+    }
+    async showOnlineUsers(users)
+    {
+        let onlineUsers = await users;
+
+        while (this.OnlineUsers.firstChild) 
+        {
+            this.OnlineUsers.removeChild(this.OnlineUsers.firstChild);
+        }
+        for (const user of onlineUsers) 
+        {
+            // if(user !== userID)
+            // {
+                const onlineUser = document.createElement('li');
+                onlineUser.textContent = user;
+                this.OnlineUsers.appendChild(onlineUser);
+            // }
+        }
+    }
+    showActiveChat()
+    {
+        this.shadowRoot.appendChild(this.chatContainer);
     }
 }
 

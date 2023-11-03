@@ -7,6 +7,8 @@ class ChatModel extends EventTarget
         super();
         this.sharedKey = undefined;
         this.activeChat = undefined;
+        this.sessionData = undefined;
+        this.activeChatInterval = null;
     }
     init()
     {
@@ -20,6 +22,11 @@ class ChatModel extends EventTarget
         setInterval(()=>
         {
             this.getchatProposals();
+        },5000)
+
+        this.activeChatInterval = setInterval(()=>
+        {
+            this.getActiveChats();
         },5000)
     }
     async getMessage(chatID)
@@ -57,7 +64,6 @@ class ChatModel extends EventTarget
     }
     async sendMessage(message)
     {
-        // alert(`model Mensaje ${message} + chat id ${this.activeChat}`);
         let sessionData = this.getSessionData();
         
         let fetchData = 
@@ -117,6 +123,7 @@ class ChatModel extends EventTarget
         };
 
         let request = await fetch( 'http://localhost:8080/confirmChatProposal',fetchData );
+        
 
         let response = await request.json();
         
@@ -146,12 +153,16 @@ class ChatModel extends EventTarget
     }
     async getOnlineUsers()
     {
+        this.sessionData = this.getDataInLocalStorage('sessionData');
+        let userID = this.sessionData.userID;
+
         let fetchData = 
         { 
             method: 'GET', 
             headers: 
             {
                 'Content-Type': 'application/json',
+                'userid': userID,
             }
         }
 
@@ -182,6 +193,10 @@ class ChatModel extends EventTarget
         if (response[0] && response[0].id) 
         {
             this.activeChat = response[0].id;
+            await this.getSharedKey();
+            this.dispatchEvent(new CustomEvent('activeChat',{detail: response[0].id}));
+
+            clearInterval(this.activeChatInterval);
         } 
         else 
         {
@@ -257,7 +272,20 @@ class ChatModel extends EventTarget
         return response;
 
     }
+    saveInLocalStorage(key,data)
+    {
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+    getDataInLocalStorage(key)
+    {
+        // Para recuperar el objeto del localStorage
+        const sessionData = localStorage.getItem(key);
 
+        // Convierte la cadena JSON de nuevo a un objeto JavaScript
+        const data = JSON.parse(sessionData);
+
+        return data;
+    }
 }
 
 export {ChatModel};
