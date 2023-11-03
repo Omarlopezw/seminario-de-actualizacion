@@ -262,6 +262,14 @@ class ChatView extends HTMLElement
         })
 
     }
+
+/**
+ * @brief Muestra los usuarios en linea...
+ * 
+ * @param {PromiseArray} users - Array con usuarios en linea.
+ * 
+ * @return {void}
+ */
     async showOnlineUsers(users)
     {
         let onlineUsers = await users;
@@ -280,6 +288,11 @@ class ChatView extends HTMLElement
             // }
         }
     }
+/**
+ * @brief Muestra los chats activos...
+ *  * 
+ * @return {void}
+ */
     showActiveChat()
     {
         this.shadowRoot.appendChild(this.chatContainer);
